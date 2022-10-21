@@ -1,0 +1,20 @@
+{
+	"name": "DS_ORAC_SOCRATESSI_TIPO_EXAMEN",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ORAC_SOCRAMESSI_DEV",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "DS_ORAC_SOCRATESSI"
+		},
+		"annotations": [],
+		"type": "OracleTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "EXAMENES",
+			"table": "TIPO_EXAMEN"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

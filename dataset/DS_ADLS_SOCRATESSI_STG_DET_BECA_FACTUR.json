@@ -1,0 +1,311 @@
+{
+	"name": "DS_ADLS_SOCRATESSI_STG_DET_BECA_FACTUR",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLS_UPC_DEV",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "DS_ADLS"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "SOCRATESSI_DET_BECA_FACTUR",
+				"folderPath": {
+					"value": "@concat('structured-data/OLTP/p_GEI_Maestros_Socrates/SOCRATESSI_DET_BECA_FACTUR/',substring(convertTimeZone(utcnow(),'UTC','Pacific Standard Time'),0,10))",
+					"type": "Expression"
+				},
+				"fileSystem": "upc-dev-stg"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "COD_LINEA_NEGOCIO",
+				"type": "UTF8"
+			},
+			{
+				"name": "COD_MODAL_EST",
+				"type": "UTF8"
+			},
+			{
+				"name": "COD_PERIODO",
+				"type": "UTF8"
+			},
+			{
+				"name": "COD_PROCESO",
+				"type": "DECIMAL",
+				"precision": 38,
+				"scale": 18
+			},
+			{
+				"name": "COD_POSTULANTE",
+				"type": "UTF8"
+			},
+			{
+				"name": "COD_CATEGORIA_PAGO",
+				"type": "UTF8"
+			},
+			{
+				"name": "COD_TIPO_INGRESO",
+				"type": "UTF8"
+			},
+			{
+				"name": "COD_PERSONA",
+				"type": "DECIMAL",
+				"precision": 38,
+				"scale": 18
+			},
+			{
+				"name": "ANO_EGRESO_COLEGIO",
+				"type": "DECIMAL",
+				"precision": 38,
+				"scale": 18
+			},
+			{
+				"name": "COLEGIO_TERCERO",
+				"type": "DECIMAL",
+				"precision": 38,
+				"scale": 18
+			},
+			{
+				"name": "COLEGIO_CUARTO",
+				"type": "DECIMAL",
+				"precision": 38,
+				"scale": 18
+			},
+			{
+				"name": "COLEGIO_QUINTO",
+				"type": "DECIMAL",
+				"precision": 38,
+				"scale": 18
+			},
+			{
+				"name": "TERCIO_SUPERIOR",
+				"type": "UTF8"
+			},
+			{
+				"name": "INGRESO_ANTES",
+				"type": "UTF8"
+			},
+			{
+				"name": "MATRICULO_ANTES",
+				"type": "UTF8"
+			},
+			{
+				"name": "INSTITUCION_EGRESO",
+				"type": "UTF8"
+			},
+			{
+				"name": "CARRERA_EGRESO",
+				"type": "UTF8"
+			},
+			{
+				"name": "FECHA_EGRESO",
+				"type": "INT96"
+			},
+			{
+				"name": "FECHA_TITULO",
+				"type": "INT96"
+			},
+			{
+				"name": "ESTADO",
+				"type": "UTF8"
+			},
+			{
+				"name": "FECHA_INACTIVA",
+				"type": "INT96"
+			},
+			{
+				"name": "PUNTAJE_PROCESO",
+				"type": "DECIMAL",
+				"precision": 38,
+				"scale": 18
+			},
+			{
+				"name": "ORDEN_MERITO",
+				"type": "DECIMAL",
+				"precision": 38,
+				"scale": 18
+			},
+			{
+				"name": "COD_ALUMNO",
+				"type": "UTF8"
+			},
+			{
+				"name": "DATE_CREATED",
+				"type": "INT96"
+			},
+			{
+				"name": "DATE_MODIFIED",
+				"type": "INT96"
+			},
+			{
+				"name": "MODIFIED_BY",
+				"type": "UTF8"
+			},
+			{
+				"name": "CREATED_BY",
+				"type": "UTF8"
+			},
+			{
+				"name": "OBSERVACION",
+				"type": "UTF8"
+			},
+			{
+				"name": "COD_FINANCIAMIENTO",
+				"type": "DECIMAL",
+				"precision": 38,
+				"scale": 18
+			},
+			{
+				"name": "COD_MODALIDAD_PAGO",
+				"type": "DECIMAL",
+				"precision": 38,
+				"scale": 18
+			},
+			{
+				"name": "COD_LINEA_NEGOCIO_TRAS",
+				"type": "UTF8"
+			},
+			{
+				"name": "COD_MODAL_EST_TRASP",
+				"type": "UTF8"
+			},
+			{
+				"name": "COD_PERIODO_TRASP",
+				"type": "UTF8"
+			},
+			{
+				"name": "COD_PROCESO_TRASP",
+				"type": "DECIMAL",
+				"precision": 38,
+				"scale": 18
+			},
+			{
+				"name": "COD_POSTULANTE_TRASP",
+				"type": "UTF8"
+			},
+			{
+				"name": "COD_PRIM_TIPO_INGRESO",
+				"type": "UTF8"
+			},
+			{
+				"name": "COD_CUPON",
+				"type": "UTF8"
+			},
+			{
+				"name": "INDCUPON",
+				"type": "UTF8"
+			},
+			{
+				"name": "FECHACUPON",
+				"type": "INT96"
+			},
+			{
+				"name": "ID_DESCUENTO",
+				"type": "DECIMAL",
+				"precision": 38,
+				"scale": 18
+			},
+			{
+				"name": "COD_TURNO",
+				"type": "UTF8"
+			},
+			{
+				"name": "FECH_IMPR_CARTA",
+				"type": "INT96"
+			},
+			{
+				"name": "FECH_ENVI_CARTA",
+				"type": "INT96"
+			},
+			{
+				"name": "IND_ENVIO_CARTA",
+				"type": "UTF8"
+			},
+			{
+				"name": "IND_ENVIO_RESULTADO",
+				"type": "UTF8"
+			},
+			{
+				"name": "INSTITUCION_OTRA",
+				"type": "UTF8"
+			},
+			{
+				"name": "ID_DSCTOCONV",
+				"type": "DECIMAL",
+				"precision": 38,
+				"scale": 18
+			},
+			{
+				"name": "CICLO_INCORPORACION",
+				"type": "UTF8"
+			},
+			{
+				"name": "FECHA_POSTING",
+				"type": "INT96"
+			},
+			{
+				"name": "FECHA_INGADM",
+				"type": "INT96"
+			},
+			{
+				"name": "FECHA_IMPOR",
+				"type": "INT96"
+			},
+			{
+				"name": "FORMA_PAGO",
+				"type": "UTF8"
+			},
+			{
+				"name": "COD_EMPRESA",
+				"type": "DECIMAL",
+				"precision": 38,
+				"scale": 18
+			},
+			{
+				"name": "COD_EMPRESA_SEDE",
+				"type": "DECIMAL",
+				"precision": 38,
+				"scale": 18
+			},
+			{
+				"name": "TMP_OPORTU",
+				"type": "DECIMAL",
+				"precision": 38,
+				"scale": 18
+			},
+			{
+				"name": "ID_POST_CRM",
+				"type": "UTF8"
+			},
+			{
+				"name": "CANAL_POSTULACION",
+				"type": "UTF8"
+			},
+			{
+				"name": "CANAL_INCORPORACION",
+				"type": "UTF8"
+			},
+			{
+				"name": "FLAG_VERANO",
+				"type": "UTF8"
+			},
+			{
+				"name": "FLAG_VERANO_IN",
+				"type": "UTF8"
+			},
+			{
+				"name": "ID_POST_ADM_BAN",
+				"type": "DECIMAL",
+				"precision": 38,
+				"scale": 18
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

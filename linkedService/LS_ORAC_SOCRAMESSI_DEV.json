@@ -1,0 +1,23 @@
+{
+	"name": "LS_ORAC_SOCRAMESSI_DEV",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "Oracle",
+		"typeProperties": {
+			"connectionString": "host=SVRDESI2.UPC.EDU.PE;port=1521;sid=DESI2;user id=dtandazo",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "LS_AKV_UPC",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "kv-upc-socratessi-dev-password-dtandazo"
+			}
+		},
+		"connectVia": {
+			"referenceName": "ir-dev-upc-zat-joe",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

@@ -1,0 +1,17 @@
+{
+	"name": "DS_ORAC_SOCRATESSI_DET_OBLIGAC_PAGO",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ORAC_SOCRAMESSI_DEV",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "OracleTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "OBLIGACI",
+			"table": "DET_OBLIGAC_PAGO"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

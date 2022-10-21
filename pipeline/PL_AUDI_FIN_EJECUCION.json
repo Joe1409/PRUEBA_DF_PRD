@@ -1,0 +1,147 @@
+{
+	"name": "PL_AUDI_FIN_EJECUCION",
+	"properties": {
+		"activities": [
+			{
+				"name": "Log Fin Ejecucion",
+				"type": "Script",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "LS_SQL_ZATDB",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"parameters": [
+								{
+									"name": "p_REGI_CODIGO",
+									"type": "Int64",
+									"value": {
+										"value": "@pipeline().parameters.p_REGI_CODIGO",
+										"type": "Expression"
+									},
+									"direction": "Input"
+								},
+								{
+									"name": "p_AUDI_FEC_FIN_EJECUCION",
+									"type": "Datetime",
+									"value": {
+										"value": "@pipeline().parameters.p_AUDI_FEC_FIN_EJECUCION",
+										"type": "Expression"
+									},
+									"direction": "Input"
+								},
+								{
+									"name": "p_AUDI_FILAS_REGISTRADAS",
+									"type": "Int64",
+									"value": {
+										"value": "@pipeline().parameters.p_AUDI_FILAS_REGISTRADAS",
+										"type": "Expression"
+									},
+									"direction": "Input"
+								},
+								{
+									"name": "p_AUDI_FILAS_NO_REGISTRADAS",
+									"type": "Int64",
+									"value": {
+										"value": "@pipeline().parameters.p_AUDI_FILAS_NO_REGISTRADAS",
+										"type": "Expression"
+									},
+									"direction": "Input"
+								},
+								{
+									"name": "p_AUDI_DURACION_SEGUNDOS",
+									"type": "Int64",
+									"value": {
+										"value": "@pipeline().parameters.p_AUDI_DURACION_SEGUNDOS",
+										"type": "Expression"
+									},
+									"direction": "Input"
+								},
+								{
+									"name": "p_AUDI_CODIGO_ERROR",
+									"type": "String",
+									"value": {
+										"value": "@pipeline().parameters.p_AUDI_CODIGO_ERROR",
+										"type": "Expression"
+									},
+									"direction": "Input"
+								},
+								{
+									"name": "p_AUDI_DESCRIPCION_ERROR",
+									"type": "String",
+									"value": {
+										"value": "@pipeline().parameters.p_AUDI_DESCRIPCION_ERROR",
+										"type": "Expression"
+									},
+									"direction": "Input"
+								},
+								{
+									"name": "p_AUDI_ESTADO",
+									"type": "String",
+									"value": {
+										"value": "@if(empty(pipeline().parameters.p_AUDI_CODIGO_ERROR),'OK','ERROR')",
+										"type": "Expression"
+									},
+									"direction": "Input"
+								},
+								{
+									"name": "p_AUDI_DURACION_SEGUNDOS_ENCOLA",
+									"type": "Int64",
+									"value": {
+										"value": "@pipeline().parameters.p_AUDI_DURACION_SEGUNDOS_ENCOLA",
+										"type": "Expression"
+									},
+									"direction": "Input"
+								}
+							],
+							"type": "Query",
+							"text": "Update conf.CONTROL_ENTIDAD\nSet AUDI_FEC_FIN_EJECUCION = @p_AUDI_FEC_FIN_EJECUCION,\n\tAUDI_FILAS_REGISTRADAS = @p_AUDI_FILAS_REGISTRADAS,\n\tAUDI_FILAS_NO_REGISTRADAS = @p_AUDI_FILAS_NO_REGISTRADAS,\n\tAUDI_DURACION_SEGUNDOS = @p_AUDI_DURACION_SEGUNDOS,\n\tAUDI_DURACION_SEGUNDOS_ENCOLA = @p_AUDI_DURACION_SEGUNDOS_ENCOLA,\n\tAUDI_CODIGO_ERROR = @p_AUDI_CODIGO_ERROR,\n\tAUDI_DESCRIPCION_ERROR = @p_AUDI_DESCRIPCION_ERROR,\n\tAUDI_ESTADO = @p_AUDI_ESTADO,\n\tREPR_FEC_ULTIMA_CARGA = IIF(@p_AUDI_ESTADO='OK',Cast(GETDATE() AS DATE),REPR_FEC_ULTIMA_CARGA)\nWhere REGI_CODIGO = @p_REGI_CODIGO\n\n\nInsert Into conf.CONTROL_ENTIDAD_HISTORICO\nSelect *\nFrom conf.CONTROL_ENTIDAD\nWhere REGI_CODIGO = @p_REGI_CODIGO"
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"p_REGI_CODIGO": {
+				"type": "int"
+			},
+			"p_AUDI_FEC_FIN_EJECUCION": {
+				"type": "string"
+			},
+			"p_AUDI_FILAS_REGISTRADAS": {
+				"type": "int"
+			},
+			"p_AUDI_FILAS_NO_REGISTRADAS": {
+				"type": "int"
+			},
+			"p_AUDI_DURACION_SEGUNDOS": {
+				"type": "int"
+			},
+			"p_AUDI_CODIGO_ERROR": {
+				"type": "string"
+			},
+			"p_AUDI_DESCRIPCION_ERROR": {
+				"type": "string"
+			},
+			"p_AUDI_DURACION_SEGUNDOS_ENCOLA": {
+				"type": "int"
+			}
+		},
+		"folder": {
+			"name": "p_GEI_Reutilizables"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-10-12T19:35:00Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

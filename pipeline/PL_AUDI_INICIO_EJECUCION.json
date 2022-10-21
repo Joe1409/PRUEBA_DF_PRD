@@ -1,0 +1,111 @@
+{
+	"name": "PL_AUDI_INICIO_EJECUCION",
+	"properties": {
+		"activities": [
+			{
+				"name": "Log Inicio Ejecucion",
+				"type": "Script",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "LS_SQL_ZATDB",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"parameters": [
+								{
+									"name": "p_REGI_CODIGO",
+									"type": "Int16",
+									"value": {
+										"value": "@pipeline().parameters.p_REGI_CODIGO",
+										"type": "Expression"
+									},
+									"direction": "Input"
+								},
+								{
+									"name": "p_AUDI_FEC_INICIO_EJECUCION",
+									"type": "Datetime",
+									"value": {
+										"value": "@utcnow()",
+										"type": "Expression"
+									},
+									"direction": "Input"
+								},
+								{
+									"name": "p_AUDI_PIPELINERUNID",
+									"type": "String",
+									"value": {
+										"value": "@pipeline().parameters.p_AUDI_PIPELINERUNID",
+										"type": "Expression"
+									},
+									"direction": "Input"
+								},
+								{
+									"name": "p_AUDI_PIPELINENAME",
+									"type": "String",
+									"value": {
+										"value": "@pipeline().parameters.p_AUDI_PIPELINENAME",
+										"type": "Expression"
+									},
+									"direction": "Input"
+								},
+								{
+									"name": "p_AUDI_PIPELINERUNID_PADRE",
+									"type": "String",
+									"value": {
+										"value": "@pipeline().parameters.p_AUDI_PIPELINERUNID_PADRE",
+										"type": "Expression"
+									},
+									"direction": "Input"
+								},
+								{
+									"name": "p_AUDI_PIPELINENAME_PADRE",
+									"type": "String",
+									"value": {
+										"value": "@pipeline().parameters.p_AUDI_PIPELINENAME_PADRE",
+										"type": "Expression"
+									},
+									"direction": "Input"
+								}
+							],
+							"type": "Query",
+							"text": "update Conf.CONTROL_ENTIDAD\nset AUDI_FEC_INICIO_EJECUCION = @p_AUDI_FEC_INICIO_EJECUCION,\n\tAUDI_FEC_FIN_EJECUCION = NULL,\n\tAUDI_FILAS_REGISTRADAS = NULL,\n\tAUDI_FILAS_NO_REGISTRADAS = NULL,\n\tAUDI_DURACION_SEGUNDOS = NULL,\n\tAUDI_ESTADO = 'EN EJECUCION',\n\tAUDI_CODIGO_ERROR = NULL,\n\tAUDI_DESCRIPCION_ERROR = NULL,\n\tAUDI_PIPELINERUNID = @p_AUDI_PIPELINERUNID,\n\tAUDI_PIPELINENAME = @p_AUDI_PIPELINENAME,\n\tAUDI_PIPELINERUNID_PADRE = @p_AUDI_PIPELINERUNID_PADRE,\n\tAUDI_PIPELINENAME_PADRE = @p_AUDI_PIPELINENAME_PADRE\nwhere REGI_CODIGO = @p_REGI_CODIGO"
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"p_REGI_CODIGO": {
+				"type": "int"
+			},
+			"p_AUDI_PIPELINERUNID": {
+				"type": "string"
+			},
+			"p_AUDI_PIPELINENAME": {
+				"type": "string"
+			},
+			"p_AUDI_PIPELINERUNID_PADRE": {
+				"type": "string"
+			},
+			"p_AUDI_PIPELINENAME_PADRE": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "p_GEI_Reutilizables"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-10-12T16:14:15Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
