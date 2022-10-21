@@ -1,0 +1,9 @@
+{
+	"name": "df-upc-prd-zat",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "a7cf7430-5f2f-4746-8e9f-1bf308850dee",
+		"tenantId": "f76dc75f-aa17-45f2-9866-507268fe20f2"
+	}
+}
