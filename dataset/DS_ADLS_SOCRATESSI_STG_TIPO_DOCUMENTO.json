@@ -1,0 +1,28 @@
+{
+	"name": "DS_ADLS_SOCRATESSI_STG_TIPO_DOCUMENTO",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLS_UPC_DEV",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "DS_ADLS"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "SOCRATESSI_TIPO_DOCUMENTO",
+				"folderPath": {
+					"value": "@concat('structured-data/OLTP/p_GEI_Maestros_Socrates/SOCRATESSI_TIPO_DOCUMENTO/',substring(convertTimeZone(utcnow(),'UTC','Pacific Standard Time'),0,10))",
+					"type": "Expression"
+				},
+				"fileSystem": "upc-dev-stg"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

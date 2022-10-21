@@ -1,0 +1,20 @@
+{
+	"name": "DS_ORAC_SOCRATESSI_SEGUIMIENTO_DOCUMENT",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ORAC_SOCRAMESSI_DEV",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "DS_ORAC_SOCRATESSI"
+		},
+		"annotations": [],
+		"type": "OracleTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "ADMISION",
+			"table": "SEGUIMIENTO_DOCUMENT"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

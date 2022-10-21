@@ -1,0 +1,12 @@
+{
+	"name": "irPCZAT",
+	"properties": {
+		"type": "SelfHosted",
+		"typeProperties": {
+			"linkedInfo": {
+				"resourceId": "/subscriptions/e2dbb71c-7721-412e-bcbd-af9c46ec61f5/resourcegroups/Demo_GEI_UPC/providers/Microsoft.DataFactory/factories/dfdemoGEIUPC/integrationruntimes/irPCZAT",
+				"authorizationType": "Rbac"
+			}
+		}
+	}
+}

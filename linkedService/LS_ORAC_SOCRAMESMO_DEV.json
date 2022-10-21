@@ -1,0 +1,23 @@
+{
+	"name": "LS_ORAC_SOCRAMESMO_DEV",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "Oracle",
+		"typeProperties": {
+			"connectionString": "host=10.10.1.9;port=1521;sid=dese2;user id=ISINTCRMCOM",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "LS_AKV_UPC",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "kv-upc-socratesmo-dev-password-ISINTCRMCOM"
+			}
+		},
+		"connectVia": {
+			"referenceName": "ir-dev-upc-zat-joe",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

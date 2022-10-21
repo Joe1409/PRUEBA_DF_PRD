@@ -1,0 +1,303 @@
+{
+	"name": "PL_COPY_DS_ADLS_SOCRATESMO_STG_MATRICULA",
+	"properties": {
+		"activities": [
+			{
+				"name": "Revisa FLG_ACTIVO",
+				"type": "Script",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "LS_SQL_ZATDB",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"parameters": [
+								{
+									"name": "p_REGI_CODIGO",
+									"type": "Int16",
+									"value": {
+										"value": "@pipeline().parameters.p_REGI_CODIGO",
+										"type": "Expression"
+									},
+									"direction": "Input"
+								}
+							],
+							"type": "Query",
+							"text": "Select REGI_FLG_ACTIVO\nFrom conf.CONTROL_ENTIDAD\nwhere REGI_CODIGO = @p_REGI_CODIGO"
+						}
+					]
+				}
+			},
+			{
+				"name": "Valida Ejecucion MATRICULA",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Revisa FLG_ACTIVO",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(activity('Revisa FLG_ACTIVO').output.resultSets[0]['rows'][0].REGI_FLG_ACTIVO,'S')",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "Inicio Ejecucion",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "PL_AUDI_INICIO_EJECUCION",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"p_REGI_CODIGO": {
+										"value": "@pipeline().parameters.p_REGI_CODIGO",
+										"type": "Expression"
+									},
+									"p_AUDI_PIPELINERUNID": {
+										"value": "@pipeline().RunId",
+										"type": "Expression"
+									},
+									"p_AUDI_PIPELINENAME": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"p_AUDI_PIPELINERUNID_PADRE": {
+										"value": "@pipeline()?.TriggeredByPipelineRunId",
+										"type": "Expression"
+									},
+									"p_AUDI_PIPELINENAME_PADRE": {
+										"value": "@pipeline()?.TriggeredByPipelineName",
+										"type": "Expression"
+									}
+								}
+							}
+						},
+						{
+							"name": "Fin Ejecucion",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "Copy Data",
+									"dependencyConditions": [
+										"Completed"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "PL_AUDI_FIN_EJECUCION",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"p_REGI_CODIGO": {
+										"value": "@pipeline().parameters.p_REGI_CODIGO",
+										"type": "Expression"
+									},
+									"p_AUDI_FEC_FIN_EJECUCION": {
+										"value": "@activity('Copy Data').ExecutionEndTime",
+										"type": "Expression"
+									},
+									"p_AUDI_FILAS_REGISTRADAS": {
+										"value": "@activity('Copy Data').output.rowsCopied",
+										"type": "Expression"
+									},
+									"p_AUDI_FILAS_NO_REGISTRADAS": {
+										"value": "@activity('Copy Data').output.rowsSkipped",
+										"type": "Expression"
+									},
+									"p_AUDI_DURACION_SEGUNDOS": {
+										"value": "@activity('Copy Data').output.copyDuration",
+										"type": "Expression"
+									},
+									"p_AUDI_CODIGO_ERROR": {
+										"value": "@activity('Copy Data').Error?.errorCode",
+										"type": "Expression"
+									},
+									"p_AUDI_DESCRIPCION_ERROR": {
+										"value": "@activity('Copy Data').Error?.message",
+										"type": "Expression"
+									},
+									"p_AUDI_DURACION_SEGUNDOS_ENCOLA": {
+										"value": "@activity('Copy Data').output.durationInQueue.integrationRuntimeQueue",
+										"type": "Expression"
+									}
+								}
+							}
+						},
+						{
+							"name": "Copy Data",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "Obtiene Query a Ejecutar",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "OracleSource",
+									"oracleReaderQuery": {
+										"value": "@activity('Obtiene Query a Ejecutar').output.resultSets[0]['rows'][0].Query",
+										"type": "Expression"
+									},
+									"partitionOption": "None",
+									"convertDecimalToInteger": false,
+									"queryTimeout": "02:00:00"
+								},
+								"sink": {
+									"type": "OracleSink",
+									"writeBatchSize": 10000
+								},
+								"enableStaging": false,
+								"enableSkipIncompatibleRow": true,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "DS_ORAC_SOCRATESMO_MATRICULA",
+									"type": "DatasetReference"
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "DS_ORAC_SOCRATESMO_MATRICULA",
+									"type": "DatasetReference"
+								}
+							]
+						},
+						{
+							"name": "Obtiene Query a Ejecutar",
+							"type": "Script",
+							"dependsOn": [
+								{
+									"activity": "Inicio Ejecucion",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"linkedServiceName": {
+								"referenceName": "LS_SQL_ZATDB",
+								"type": "LinkedServiceReference"
+							},
+							"typeProperties": {
+								"scripts": [
+									{
+										"type": "Query",
+										"text": "Select  \n\t\t'Select CICLO_ALUMNO, COD_ALUMNO, COD_CURRIC_MAT, COD_EMPRESA, COD_ESTADO_MAT, COD_EXAMEN, COD_LINEA_NEGOCIO, COD_LOCAL, COD_MODAL_EST, COD_PERIOD_MAT, COD_PERSONA_CONTACTO, COD_PRODUC_MAT, COD_SECCION, COD_SEDE, COD_TIPO_MAT, COD_TIPO_TARIFA, COPY_CIC_ALU, ESTADO_CIERRE, ESTADO_EGRESADO, ESTADO_MAT_EXTEM, FECHA_CREACION, FECHA_MATRICULA, FECHA_MODIFICACION, GLOSA, ID, ID_RESERVA, IND_PRONABEC, MAT_ADICIONAL, MATRIC_ES_DOCENTE_ALI, NUM_OBS_ALTE, NUM_OBS_CONS, ORDEN_BECA_MERITO, ORDEN_BECA_MERITO_PROD, ORDEN_MERITO, ORDEN_MERITO_ACUM, ORDEN_MERITO_PROD, ORDEN_MERITO_PROD_ACUM, POND_ACTUAL, POND_ACUMULADO, POND_BECA, PRUEBA, TIPO_MERITO, TIPO_MERITO_ACUM, TIPO_MERITO_PROD, TIPO_MERITO_PROD_ACUM, USUARIO_CREACION, USUARIO_MODIFICACION, SYSDATE AS FEC_CARGA\n\t\t From MATRICUL.MATRICULA ' +\n\t\t Case When REGI_TIPO_TABLA = 'I' Then \n\t\t\t\t\tCase When REGI_TIPO_EJECUCION = 'A' Then 'Where (FECHA_CREACION >= ' + IsNull('TRUNC(TO_DATE(''' + Format(REPR_FEC_ULTIMA_CARGA,'dd-MM-yyyy') + ''',''DD-MM-YYYY''))','TRUNC(SYSDATE-1)') + ' And FECHA_CREACION < TRUNC(SYSDATE)) OR (FECHA_MODIFICACION >= ' + IsNull('TRUNC(TO_DATE(''' + Format(REPR_FEC_ULTIMA_CARGA,'dd-MM-yyyy') + ''',''DD-MM-YYYY''))','TRUNC(SYSDATE-1)') + ' And FECHA_MODIFICACION < TRUNC(SYSDATE))'\n\t\t\t\t\t\t When REGI_TIPO_EJECUCION = 'M' Then 'Where (FECHA_CREACION >= TRUNC(TO_DATE(''' + Format(REPR_FEC_INICIO_REPROCESO,'dd-MM-yyyy') + ''',''DD-MM-YYYY'')) And FECHA_CREACION < TRUNC(TO_DATE(''' + Format(REPR_FEC_FIN_REPROCESO,'dd-MM-yyyy') + ''',''DD-MM-YYYY'')+1)) OR (FECHA_MODIFICACION >= TRUNC(TO_DATE(''' + Format(REPR_FEC_INICIO_REPROCESO,'dd-MM-yyyy') + ''',''DD-MM-YYYY'')) And FECHA_MODIFICACION < TRUNC(TO_DATE(''' + Format(REPR_FEC_FIN_REPROCESO,'dd-MM-yyyy') + ''',''DD-MM-YYYY'')+1))'\n\t\t\t\t\t\t When REGI_TIPO_EJECUCION = 'T' Then ''\n\t\t\t\t\t\t Else ''\n\t\t\t\t\tEnd\n\t\t\t  When REGI_TIPO_TABLA = 'T' Then ''\n\t\t\t  Else ''\n\t\t End As Query\nFrom CONF.CONTROL_ENTIDAD\nWhere REGI_CODIGO = @p_REGI_CODIGO"
+									}
+								]
+							}
+						},
+						{
+							"name": "Fin Ejecucion Error Query",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "Copy Data",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "PL_AUDI_FIN_EJECUCION",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"p_REGI_CODIGO": {
+										"value": "@pipeline().parameters.p_REGI_CODIGO",
+										"type": "Expression"
+									},
+									"p_AUDI_FEC_FIN_EJECUCION": {
+										"value": "@activity('Obtiene Query a Ejecutar').ExecutionEndTime",
+										"type": "Expression"
+									},
+									"p_AUDI_FILAS_REGISTRADAS": 0,
+									"p_AUDI_FILAS_NO_REGISTRADAS": 0,
+									"p_AUDI_DURACION_SEGUNDOS": {
+										"value": "@activity('Obtiene Query a Ejecutar').output.executionDuration",
+										"type": "Expression"
+									},
+									"p_AUDI_CODIGO_ERROR": {
+										"value": "@activity('Obtiene Query a Ejecutar').Error?.errorCode",
+										"type": "Expression"
+									},
+									"p_AUDI_DESCRIPCION_ERROR": {
+										"value": "@activity('Obtiene Query a Ejecutar').Error?.Message",
+										"type": "Expression"
+									},
+									"p_AUDI_DURACION_SEGUNDOS_ENCOLA": {
+										"value": "@activity('Obtiene Query a Ejecutar').output.durationInQueue.integrationRuntimeQueue",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"p_REGI_CODIGO": {
+				"type": "int",
+				"defaultValue": 4
+			}
+		},
+		"folder": {
+			"name": "p_GEI_Maestros_Socrates/1. Datalake STG"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-10-18T19:14:53Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
