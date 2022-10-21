@@ -1,0 +1,20 @@
+{
+	"name": "DS_ORAC_SOCRATESSI_PRODUCTO_POSTULANTE",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ORAC_SOCRAMESSI_DEV",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "DS_ORAC_SOCRATESSI"
+		},
+		"annotations": [],
+		"type": "OracleTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "ADMISION",
+			"table": "PRODUCTO_POSTULANTE"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

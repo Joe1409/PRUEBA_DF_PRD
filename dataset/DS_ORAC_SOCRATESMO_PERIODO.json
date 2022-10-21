@@ -1,0 +1,20 @@
+{
+	"name": "DS_ORAC_SOCRATESMO_PERIODO",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ORAC_SOCRAMESMO_DEV",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "DS_ORAC_SOCRATESMO"
+		},
+		"annotations": [],
+		"type": "OracleTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "REGISTRO",
+			"table": "PERIODO"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

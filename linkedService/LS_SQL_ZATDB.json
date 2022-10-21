@@ -1,0 +1,19 @@
+{
+	"name": "LS_SQL_ZATDB",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureSqlDatabase",
+		"typeProperties": {
+			"connectionString": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=zatserver.database.windows.net;Initial Catalog=ZATDB;User ID=zat",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "LS_AKV_UPC",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "kv-upc-zatdb-dev-password-zat"
+			}
+		}
+	}
+}

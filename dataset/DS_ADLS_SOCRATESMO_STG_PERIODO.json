@@ -1,0 +1,25 @@
+{
+	"name": "DS_ADLS_SOCRATESMO_STG_PERIODO",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLS_UPC_DEV",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "DS_ADLS"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "SOCRATESMO_PERIODO",
+				"folderPath": "structured-data/OLTP/p_GEI_Maestros_Socrates",
+				"fileSystem": "upc-dev-stg"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

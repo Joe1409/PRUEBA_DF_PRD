@@ -1,0 +1,222 @@
+{
+	"name": "PL_COPY_DS_ADLS_SOCRATESSI_STG_TIPO_DESCUENTO",
+	"properties": {
+		"activities": [
+			{
+				"name": "Revisa FLG_ACTIVO",
+				"type": "Script",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "LS_SQL_ZATDB",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"parameters": [
+								{
+									"name": "p_REGI_CODIGO",
+									"type": "Int16",
+									"value": {
+										"value": "@pipeline().parameters.p_REGI_CODIGO",
+										"type": "Expression"
+									},
+									"direction": "Input"
+								}
+							],
+							"type": "Query",
+							"text": "Select REGI_FLG_ACTIVO\nFrom conf.CONTROL_ENTIDAD\nwhere REGI_CODIGO = @p_REGI_CODIGO"
+						}
+					]
+				}
+			},
+			{
+				"name": "Valida Ejecucion TIPO_DESCUENTO",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Revisa FLG_ACTIVO",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(activity('Revisa FLG_ACTIVO').output.resultSets[0]['rows'][0].REGI_FLG_ACTIVO,'S')",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "Inicio Ejecucion",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "PL_AUDI_INICIO_EJECUCION",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"p_REGI_CODIGO": {
+										"value": "@pipeline().parameters.p_REGI_CODIGO",
+										"type": "Expression"
+									},
+									"p_AUDI_PIPELINERUNID": {
+										"value": "@pipeline().RunId",
+										"type": "Expression"
+									},
+									"p_AUDI_PIPELINENAME": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"p_AUDI_PIPELINERUNID_PADRE": {
+										"value": "@pipeline()?.TriggeredByPipelineRunId",
+										"type": "Expression"
+									},
+									"p_AUDI_PIPELINENAME_PADRE": {
+										"value": "@pipeline()?.TriggeredByPipelineName",
+										"type": "Expression"
+									}
+								}
+							}
+						},
+						{
+							"name": "Fin Ejecucion",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "Copy data",
+									"dependencyConditions": [
+										"Completed"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "PL_AUDI_FIN_EJECUCION",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"p_REGI_CODIGO": {
+										"value": "@pipeline().parameters.p_REGI_CODIGO",
+										"type": "Expression"
+									},
+									"p_AUDI_FEC_FIN_EJECUCION": {
+										"value": "@activity('Copy Data').ExecutionEndTime",
+										"type": "Expression"
+									},
+									"p_AUDI_FILAS_REGISTRADAS": {
+										"value": "@activity('Copy Data').output.rowsCopied",
+										"type": "Expression"
+									},
+									"p_AUDI_FILAS_NO_REGISTRADAS": {
+										"value": "@activity('Copy Data').output.rowsSkipped",
+										"type": "Expression"
+									},
+									"p_AUDI_DURACION_SEGUNDOS": {
+										"value": "@activity('Copy Data').output.copyDuration",
+										"type": "Expression"
+									},
+									"p_AUDI_CODIGO_ERROR": {
+										"value": "@activity('Copy Data').Error?.errorCode",
+										"type": "Expression"
+									},
+									"p_AUDI_DESCRIPCION_ERROR": {
+										"value": "@activity('Copy Data').Error?.message",
+										"type": "Expression"
+									},
+									"p_AUDI_DURACION_SEGUNDOS_ENCOLA": {
+										"value": "@activity('Copy Data').output.durationInQueue.integrationRuntimeQueue",
+										"type": "Expression"
+									}
+								}
+							}
+						},
+						{
+							"name": "Copy data",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "Inicio Ejecucion",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "OracleSource",
+									"partitionOption": "None",
+									"queryTimeout": "02:00:00"
+								},
+								"sink": {
+									"type": "ParquetSink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									},
+									"formatSettings": {
+										"type": "ParquetWriteSettings"
+									}
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "DS_ORAC_SOCRATESSI_TIPO_DESCUENTO",
+									"type": "DatasetReference"
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "DS_ADLS_SOCRATESSI_STG_TIPO_DESCUENTO",
+									"type": "DatasetReference"
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"p_REGI_CODIGO": {
+				"type": "int",
+				"defaultValue": 35
+			}
+		},
+		"folder": {
+			"name": "p_GEI_Maestros_Socrates/1. Datalake STG"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-10-17T20:16:23Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
